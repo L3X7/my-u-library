@@ -1,2 +1,2 @@
-# my-u-library
+# My U Library
 Small library system
