@@ -1,9 +1,8 @@
 ﻿using MyULibraryBackend.Entities;
 using MyULibraryBackend.Entities.Models;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace MyULibraryBackend.Repositories.Implementation
 {
@@ -16,7 +15,7 @@ namespace MyULibraryBackend.Repositories.Implementation
         }
         public List<User> getAll()
         {
-            return db.Users.ToList();
+            return db.Users.Include(r => r.Role).ToList();
         }
         public User Get(long id)
         {

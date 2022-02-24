@@ -27,18 +27,23 @@ namespace MyULibraryBackend
             services.AddDbContext<MyULibraryDbContext>(o => o.UseSqlServer(Configuration["ConnectionStrings:MyULibrary"]));
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IBookRepository, BookRepository>();
+            services.AddScoped<IRoleRepository, RoleRepository>();
             services.AddControllers().AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
 
             app.UseHttpsRedirection();
+
+            app.UseCors(builder => builder.WithOrigins("http://localhost:4200").AllowAnyMethod().AllowAnyHeader());
 
             app.UseRouting();
 
@@ -55,6 +60,8 @@ namespace MyULibraryBackend
             {
                 endpoints.MapControllers();
             });
+
+
         }
     }
 }

@@ -25,7 +25,7 @@ namespace MyULibraryBackend.Controllers
         public IActionResult Get()
         {
             List<User> users = userRepository.getAll();
-            return Ok(users);
+            return Ok(new { code = 200, message = "Get users", data = users });
         }
 
         [HttpGet("{id}")]
