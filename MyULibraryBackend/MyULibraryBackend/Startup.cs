@@ -28,6 +28,8 @@ namespace MyULibraryBackend
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IBookRepository, BookRepository>();
             services.AddScoped<IRoleRepository, RoleRepository>();
+            services.AddScoped<IGenreRepository, GenreRepository>();
+            services.AddScoped<IBookLogRepository, BookLogRepository>();
             services.AddControllers().AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
         }
 

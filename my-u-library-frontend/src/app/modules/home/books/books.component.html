@@ -1,1 +1,65 @@
-<p>books works!</p>
+<div class="row">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-header">
+          <div class="row">
+            <div class="col-12 text-end">
+              <button type="button" class="btn btn-success" (click)="openDialog()">Add book</button>
+            </div>
+            <div class="col-12">
+              <h4 class="card-title"> Books</h4>
+            </div>
+          </div>
+        </div>
+        <div class="card-body">
+          <table mat-table class="w-100" [dataSource]="dataSource">
+  
+            <!-- Position Column -->
+            <ng-container matColumnDef="IdBook">
+              <th mat-header-cell *matHeaderCellDef> ID </th>
+              <td mat-cell *matCellDef="let element"> {{element.idBook}} </td>
+            </ng-container>
+  
+            <ng-container matColumnDef="Title">
+              <th mat-header-cell *matHeaderCellDef> Title </th>
+              <td mat-cell *matCellDef="let element"> {{element.title}} </td>
+            </ng-container>
+  
+            <ng-container matColumnDef="Author">
+              <th mat-header-cell *matHeaderCellDef> Author </th>
+              <td mat-cell *matCellDef="let element"> {{element.author}} </td>
+            </ng-container>
+  
+            <ng-container matColumnDef="PublishedYear">
+              <th mat-header-cell *matHeaderCellDef> PublishedYear </th>
+              <td mat-cell *matCellDef="let element"> {{element.publishedYear}} </td>
+            </ng-container>
+  
+            <ng-container matColumnDef="IdGenre">
+              <th mat-header-cell *matHeaderCellDef> Genre</th>
+              <td mat-cell *matCellDef="let element"> {{element.genre.genreName}} </td>
+            </ng-container>
+            <ng-container matColumnDef="Quantity">
+              <th mat-header-cell *matHeaderCellDef> Quantity</th>
+              <td mat-cell *matCellDef="let element"> {{element.quantity}} </td>
+            </ng-container>
+            <!-- <ng-container matColumnDef="options">
+              <th mat-header-cell *matHeaderCellDef> Options</th>
+              <td mat-cell *matCellDef="let element"> <button type="button" class="btn btn-info"><i
+                    class="bi bi-pencil-square"></i>
+                  </button>
+  
+                 </td>
+            </ng-container> -->
+  
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          </table>
+  
+          <!-- <mat-paginator #paginator [length]="totalRows" [pageIndex]="currentPage" [pageSize]="pageSize"
+                  [pageSizeOptions]="pageSizeOptions" (page)="pageChanged($event)" aria-label="Select page">
+                </mat-paginator>             -->
+        </div>
+      </div>
+    </div>
+  </div>

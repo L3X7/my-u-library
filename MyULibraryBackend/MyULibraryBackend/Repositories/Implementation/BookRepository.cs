@@ -16,12 +16,13 @@ namespace MyULibraryBackend.Repositories.Implementation
             db = context;
         }
 
-        public void Add(Book user)
+        public void Add(Book book)
         {
-            throw new NotImplementedException();
+            db.Books.Add(book);
+            db.SaveChanges();
         }
 
-        public void Delete(Book user)
+        public void Delete(Book book)
         {
             throw new NotImplementedException();
         }
@@ -33,17 +34,23 @@ namespace MyULibraryBackend.Repositories.Implementation
 
         public List<Book> getAll()
         {
-            throw new NotImplementedException();
+            return db.Books.Include(g => g.Genre).ToList();
         }
 
         public List<Book> GetByFilter(string title = "", string author = "", string genre = "")
         {
-
-            return db.Books.Include(b => b.Genre).Where(b => (title == "" || b.Title.Contains(title)) && (author == "" || b.Author.Contains(author)) && (genre == "" || b.Genre.GenreName.Contains(author))).ToList();
+            if((title == "" || title == null) && (author == "" || author == null) && (genre == "" || genre == null))
+            {
+                return db.Books.Include(b => b.Genre).ToList();
+            }
+            else
+            {
+                return db.Books.Include(b => b.Genre).Where(b => ((title == "" || title == null) || b.Title.ToLower().Contains(title.Trim().ToLower())) && ((author == "" || author == null) || b.Author.ToLower().Contains(author.Trim().ToLower())) && ((genre == "" || genre == null) || b.Genre.GenreName.ToLower().Contains(genre.Trim().ToLower()))).ToList();
+            }            
 
         }
 
-        public void Update(Book user, Book entity)
+        public void Update(Book book, Book entity)
         {
             throw new NotImplementedException();
         }

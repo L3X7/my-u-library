@@ -16,6 +16,6 @@ namespace MyULibraryBackend.Entities.Models
         [ForeignKey("IdUser")]
         public User User { get; set; }
         public DateTime LoanedDate { get; set; }
-        public DateTime ReturnedDate { get; set; }
+        public DateTime? ReturnedDate { get; set; }
     }
 }

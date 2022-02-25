@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HomeComponent } from './modules/home/home.component';
@@ -9,14 +9,18 @@ import { NavbarModule } from './shared/navbar/navbar.module';
 import { SidebarModule } from './shared/sidebar/sidebar.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { UserDialogComponent } from './shared/ui-components/user-dialog/user-dialog.component';
-import { MaterialModule } from './shared/modules/material.module';
+import { MaterialModule } from './modules/material.module';
 import { ReactiveFormsModule } from '@angular/forms';
+import { NgxSpinnerModule } from 'ngx-spinner';
+import { BookDialogComponent } from './shared/ui-components/book-dialog/book-dialog.component';
+import { LoadingInterceptor } from './interceptors/loading.interceptor';
 
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
     UserDialogComponent,
+    BookDialogComponent,
   ],
   imports: [
     BrowserModule,
@@ -27,12 +31,19 @@ import { ReactiveFormsModule } from '@angular/forms';
     BrowserAnimationsModule,
     HttpClientModule,
     ReactiveFormsModule,
-    MaterialModule
+    MaterialModule,
+    NgxSpinnerModule
   ],
   exports: [
 
   ],
-  providers: [],
+  providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: LoadingInterceptor,
+      multi: true
+    }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
