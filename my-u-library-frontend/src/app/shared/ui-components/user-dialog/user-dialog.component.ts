@@ -22,7 +22,7 @@ export class UserDialogComponent implements OnInit {
     this.form = this.fb.group({
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
-      email: ['', Validators.required],
+      email: ['', [Validators.required, Validators.email]],
       idRole: ['', Validators.required],
       password:['', Validators.required],
     });

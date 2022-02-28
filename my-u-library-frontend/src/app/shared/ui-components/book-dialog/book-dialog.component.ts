@@ -22,7 +22,7 @@ export class BookDialogComponent implements OnInit {
       author: ['', Validators.required],
       publishedYear: ['', Validators.required],
       idGenre: ['', Validators.required],
-      quantity: ['', Validators.required],
+      quantity: ['', [Validators.required, Validators.min(1)]],
     });
   }
 
