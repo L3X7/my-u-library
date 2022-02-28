@@ -26,7 +26,7 @@ export class SearchComponent implements OnInit {
   public form!: FormGroup;
   public genres: IGenre[] = [];
   public booksStoraged: IBook[] = [];
-  public uR: any;
+  public uI: any;
 
   constructor(private bookService: BookService,
     private dialog: MatDialog,
@@ -38,7 +38,7 @@ export class SearchComponent implements OnInit {
     private cryptoService: CryptoService) { }
 
   ngOnInit(): void {
-    this.uR = this.cryptoService.decrypt(localStorage.getItem('uR'));
+    this.uI = this.cryptoService.decrypt(localStorage.getItem('uI'));
     this.form = this.fb.group({
       title: [''],
       author: [''],
@@ -98,7 +98,7 @@ export class SearchComponent implements OnInit {
   }
 
   validateBookReserved(book: IBook) {
-    this.bookLogService.getBookReserved(book.idBook, this.uR).subscribe(
+    this.bookLogService.getBookReserved(book.idBook, this.uI).subscribe(
       (response) => {
         this.dataSourceTemp.data = [...this.dataSourceTemp.data, book];
       },
@@ -149,7 +149,7 @@ export class SearchComponent implements OnInit {
   }
 
   submit() {
-    const bookLogs = this.mapperHelper.booksToBookLogList(this.dataSourceTemp.data, this.uR);
+    const bookLogs = this.mapperHelper.booksToBookLogList(this.dataSourceTemp.data, this.uI);
     this.bookLogService.postList(bookLogs).subscribe(
       (response) => {
         this.dataSourceTemp.data = [];
