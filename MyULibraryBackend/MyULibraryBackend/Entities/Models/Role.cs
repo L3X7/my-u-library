@@ -12,6 +12,5 @@ namespace MyULibraryBackend.Entities.Models
         [Column(TypeName = "nvarchar(50)")]
         public string RoleName { get; set; }
 
-        public List<User> Users { get; set; }
     }
 }

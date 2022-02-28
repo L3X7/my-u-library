@@ -31,6 +31,7 @@ namespace MyULibraryBackend
             services.AddScoped<IGenreRepository, GenreRepository>();
             services.AddScoped<IBookLogRepository, BookLogRepository>();
             services.AddControllers().AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+            services.AddAutoMapper(typeof(Startup));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -45,18 +46,18 @@ namespace MyULibraryBackend
 
             app.UseHttpsRedirection();
 
-            app.UseCors(builder => builder.WithOrigins("http://localhost:4200").AllowAnyMethod().AllowAnyHeader());
+            app.UseCors(builder => builder.WithOrigins("http://localhost:4200", "https://my-u-library-frontend.azurewebsites.net").AllowAnyMethod().AllowAnyHeader());
 
             app.UseRouting();
 
             app.UseAuthorization();
 
-            app.UseStaticFiles(new StaticFileOptions
-            {
-                FileProvider = new PhysicalFileProvider(
-                Path.Combine(env.ContentRootPath, "StaticFiles")),
-                RequestPath = "/StaticFiles"
-            });
+            //app.UseStaticFiles(new StaticFileOptions
+            //{
+            //    FileProvider = new PhysicalFileProvider(
+            //    Path.Combine(env.ContentRootPath, "StaticFiles")),
+            //    RequestPath = "/StaticFiles"
+            //});
 
             app.UseEndpoints(endpoints =>
             {

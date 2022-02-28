@@ -3,8 +3,10 @@ using MyULibraryBackend.Entities.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using System.Transactions;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.JsonPatch;
+using MyULibraryBackend.Dtos;
+using AutoMapper;
 
 namespace MyULibraryBackend.Repositories.Implementation
 {
@@ -12,9 +14,13 @@ namespace MyULibraryBackend.Repositories.Implementation
     {
 
         readonly MyULibraryDbContext db;
-        public BookLogRepository(MyULibraryDbContext context)
+        private readonly IMapper mp;
+
+
+        public BookLogRepository(MyULibraryDbContext context, IMapper mapper)
         {
             db = context;
+            mp = mapper;
         }
 
         public void Add(BookLog bookLog)
@@ -27,9 +33,10 @@ namespace MyULibraryBackend.Repositories.Implementation
 
             using (var transaction = db.Database.BeginTransaction())
             {
-                transaction.CreateSavepoint("saveBooksLog");
+                transaction.CreateSavepoint("saveBooksLogAndUpdateBook");
                 try
                 {
+
                     db.BookLogs.AddRange(booksLog);
                     db.SaveChanges();
 
@@ -47,7 +54,7 @@ namespace MyULibraryBackend.Repositories.Implementation
                 }
                 catch (Exception)
                 {
-                    transaction.RollbackToSavepoint("saveBooksLog");
+                    transaction.RollbackToSavepoint("saveBooksLogAndUpdateBook");
                     throw;
                 }
             }
@@ -61,7 +68,7 @@ namespace MyULibraryBackend.Repositories.Implementation
 
         public BookLog Get(long id)
         {
-            throw new NotImplementedException();
+            return db.BookLogs.FirstOrDefault(u => u.IdBookLog == id);
         }
 
         public List<BookLog> getAll()
@@ -69,9 +76,61 @@ namespace MyULibraryBackend.Repositories.Implementation
             throw new NotImplementedException();
         }
 
+        public List<BookLog> Filter(string firstName, string lastName, string email)
+        {
+
+            return db.BookLogs.Include(b => b.Book).Include(u => u.User)
+                .Where(b => ((firstName == "" || firstName == null) || b.User.FirstName.ToLower().Contains(firstName.Trim().ToLower()))
+                && ((lastName == "" || lastName == null) || b.User.LastName.Contains(lastName.Trim().ToLower()))
+                && ((email == "" || email == null) || b.User.Email.ToLower().Contains(email.Trim().ToLower())) && b.ReturnedDate == null).ToList();
+
+        }
+
+        public void PatchBookLogAndBook(JsonPatchDocument<BookLogDto> patchBookDto, BookLog entity)
+        {
+            using (var transaction = db.Database.BeginTransaction())
+            {
+                transaction.CreateSavepoint("updatebookLogAndBook");
+                try
+                {
+                    //.1 Patch element
+                    //Patch DTO
+                    BookLogDto bookLogToPatch = mp.Map<BookLogDto>(entity);
+                    patchBookDto.ApplyTo(bookLogToPatch);
+
+                    //2. Mapper entity with DTO
+                    mp.Map(bookLogToPatch, entity);
+
+                    ////3. Update BookLog
+                    db.SaveChanges();
+
+                    //2. Update book
+                    Book book = db.Books.FirstOrDefault(b => b.IdBook == entity.IdBook);
+                    book.Quantity++;
+                    db.SaveChanges();
+                    transaction.Commit();
+                }
+                catch (Exception)
+                {
+                    transaction.RollbackToSavepoint("updatebookLogAndBook");
+                    throw;
+                }
+            }
+        }
+
         public void Update(BookLog bookLog, BookLog entity)
         {
             throw new NotImplementedException();
+        }
+
+        public bool GetBookReserved(long idBook, long idUser)
+        {
+            BookLog bookReserved = db.BookLogs.Where(b => b.IdBook == idBook && b.IdBook == idUser && b.ReturnedDate == null).FirstOrDefault();
+            if (bookReserved == null)
+            {
+                return false;
+            }
+            return true;
         }
     }
 }

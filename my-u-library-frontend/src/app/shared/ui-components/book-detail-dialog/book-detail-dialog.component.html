@@ -1,0 +1,43 @@
+<h2 mat-dialog-title>Book detail</h2>
+<mat-dialog-content>
+    <div class="row">
+        <div class="col-12">
+            <div class="form-group">
+                <label for="exampleFormControlInput1" class="form-label">Title</label>
+                <input type="text" readonly class="form-control"  value="{{book.title}}">
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="form-group">
+                <label for="exampleFormControlInput1" class="form-label">Author</label>
+                <input type="text" readonly class="form-control"  value="{{book.author}}">
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="form-group">
+                <label for="exampleFormControlInput1" class="form-label">Published Years</label>
+                <input type="text" readonly class="form-control" 
+                    value="{{book.publishedYear}}">
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="form-group">
+                <label for="exampleFormControlInput1" class="form-label">Genre</label>
+                <input type="text" readonly class="form-control" 
+                    value="{{book.genre.genreName}}">
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="form-group">
+                <label for="exampleFormControlInput1" class="form-label">Quantity</label>
+                <input type="text" readonly class="form-control" 
+                    value="{{book.quantity}}">
+            </div>
+        </div>
+
+    </div>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+    <button class="btn btn-danger" (click)="close()">Close</button>
+    <button class="btn btn-success" (click)="add()" *ngIf="book.quantity > 0">Add</button>
+</mat-dialog-actions>

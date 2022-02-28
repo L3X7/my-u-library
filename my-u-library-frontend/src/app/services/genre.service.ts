@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { catchError, retry, throwError } from 'rxjs';
+import { catchError, throwError } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
 @Injectable({providedIn: 'root'})
@@ -9,7 +9,6 @@ export class GenreService {
     
     get(){
         return this.http.get<any>(environment.urlApi.concat('genre')).pipe(
-            retry(1),
             catchError(this.handleError)
         );
     }

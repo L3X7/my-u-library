@@ -32,6 +32,11 @@ namespace MyULibraryBackend.Repositories.Implementation
             throw new NotImplementedException();
         }
 
+        public Book GetByTitle(string title)
+        {
+            return db.Books.Where(b => b.Title == title).FirstOrDefault();
+        }
+
         public List<Book> getAll()
         {
             return db.Books.Include(g => g.Genre).ToList();

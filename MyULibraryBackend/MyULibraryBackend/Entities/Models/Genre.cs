@@ -12,6 +12,5 @@ namespace MyULibraryBackend.Entities.Models
         [Column(TypeName = "nvarchar(200)")]
         public string GenreName { get; set; }
 
-        public List<Book> Books { get; set; }
     }
 }

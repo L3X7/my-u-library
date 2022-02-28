@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { catchError, retry, throwError } from 'rxjs';
+import { catchError, throwError } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { IBook } from '../interfaces/book.interface';
 
@@ -10,21 +10,18 @@ export class BookService {
 
     get(){
         return this.http.get<any>(environment.urlApi.concat('book')).pipe(
-            retry(1),
             catchError(this.handleError)
         );
     }
 
     filter(query: string){
         return this.http.get<any>(environment.urlApi.concat('book/filter?', query)).pipe(
-            retry(1),
             catchError(this.handleError)
         );
     }
 
     post(book: IBook){
         return this.http.post<any>(environment.urlApi.concat('book'), book).pipe(
-            retry(1),
             catchError(this.handleError)
         );
     }

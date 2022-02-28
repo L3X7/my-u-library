@@ -8,7 +8,7 @@ namespace MyULibraryBackend.Entities.Models
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public long IdHistoryBook { get; set; }
+        public long IdBookLog { get; set; }
         public long IdBook { get; set; }
         [ForeignKey("IdBook")]
         public Book Book { get; set; }

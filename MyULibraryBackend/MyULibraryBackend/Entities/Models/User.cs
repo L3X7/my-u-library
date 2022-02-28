@@ -18,8 +18,8 @@ namespace MyULibraryBackend.Entities.Models
         public int IdRole { get; set; }
         [ForeignKey("IdRole")]
         public Role Role { get; set; }
+        [Column(TypeName = "nvarchar(150)")]
+        public string Password { get; set; }
 
-
-        public List<BookLog> BookLogs { get; set; }
-    }
+    }    
 }

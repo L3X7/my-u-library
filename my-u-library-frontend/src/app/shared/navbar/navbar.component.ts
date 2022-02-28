@@ -1,5 +1,7 @@
 import { Component, ElementRef, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { CryptoService } from 'src/app/services/crypto.service';
+import { SecurityService } from 'src/app/services/security.service';
 
 @Component({
   selector: 'app-navbar',
@@ -10,7 +12,9 @@ export class NavbarComponent implements OnInit {
   private toggleButton : any;
   private sidebarVisible: boolean;
   public isCollapsed = true;
-  constructor(private element : ElementRef,private router: Router) {
+  public name: any;
+  constructor(private element : ElementRef,private router: Router, private securityService: SecurityService,
+    private cryptoService: CryptoService) {
     this.sidebarVisible = false;
    }
 
@@ -20,6 +24,7 @@ export class NavbarComponent implements OnInit {
     this.router.events.subscribe((event) => {
       this.sidebarClose();
    });
+   this.name = this.cryptoService.decrypt(localStorage.getItem('fN'));
   }
 
   sidebarToggle() {
@@ -68,6 +73,10 @@ export class NavbarComponent implements OnInit {
       navbar.classList.add('navbar-transparent');
       navbar.classList.remove('bg-white');
     }
+  }
 
+  logOut(){
+    this.securityService.logOut();
+    this.router.navigate(['/security/login']);
   }
 }

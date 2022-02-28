@@ -1,5 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { AuthGuard } from 'src/app/guards/auth.guard';
+import { BookReturnComponent } from './book-return/book-return.component';
 import { BooksComponent } from './books/books.component';
 import { HomeComponent } from './home.component';
 import { SearchComponent } from './search/search.component';
@@ -9,6 +11,7 @@ const routes: Routes = [
     {
       path: '',
       component: HomeComponent,
+      canActivate: [AuthGuard],
       children: [
         {
           path: 'books',
@@ -21,6 +24,10 @@ const routes: Routes = [
         {
           path: 'search',
           component: SearchComponent
+        },
+        {
+          path: 'book-return',
+          component: BookReturnComponent
         }
       ]
     }

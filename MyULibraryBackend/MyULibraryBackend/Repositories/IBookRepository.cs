@@ -10,6 +10,7 @@ namespace MyULibraryBackend.Repositories
     {
         List<Book> getAll();
         Book Get(long id);
+        Book GetByTitle(string title);
         List<Book> GetByFilter(string title, string author, string genre);
         void Add(Book user);
         void Update(Book user, Book entity);

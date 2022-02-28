@@ -46,6 +46,11 @@ namespace MyULibraryBackend.Controllers
             {
                 return BadRequest(new { code = 400, message = "Empty user" });
             }
+            User userAlreadyExist = userRepository.GetByEmail(user.Email);
+            if (userAlreadyExist != null)
+            {
+                return Conflict(new { code = 409, message = "User already exist" });
+            }
             userRepository.Add(user);
             return Ok(new { code = 200, message = "User created" });
         }

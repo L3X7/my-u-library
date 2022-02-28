@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { catchError, retry, throwError } from 'rxjs';
+import { catchError, map, throwError } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { IUser } from '../interfaces/user.interface';
 
@@ -10,14 +10,15 @@ export class USerService {
 
     get(){
         return this.http.get<any>(environment.urlApi.concat('user')).pipe(
-            retry(1),
             catchError(this.handleError)
         );
     }
 
     post(user: IUser){
         return this.http.post<any>(environment.urlApi.concat('user'), user).pipe(
-            retry(1),
+            map(u => {
+                localStorage.setItem("u", 'a');
+            }),
             catchError(this.handleError)
         );
     }

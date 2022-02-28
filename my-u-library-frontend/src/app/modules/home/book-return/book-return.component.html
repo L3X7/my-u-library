@@ -1,0 +1,67 @@
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <div class="row">
+                    <div class="col-12">
+                        <h4 class="card-title"> Return books</h4>
+                    </div>
+                    <div class="col-12">
+                        <form class="form-inline" role="form" [formGroup]="form" (ngSubmit)="search()">
+                            <mat-form-field class="p-3">
+                                <input matInput placeholder="First name" formControlName="firstName">
+                            </mat-form-field>
+                            <mat-form-field class="p-3">
+                                <input matInput placeholder="Last name" formControlName="LastName">
+                            </mat-form-field>
+                            <mat-form-field class="p-3">
+                                <input matInput placeholder="Email" formControlName="email">
+                            </mat-form-field>
+                            <button type="submit" class="btn btn-primary">Search</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <table mat-table class="w-100" [dataSource]="dataSource">
+
+                    <!-- Position Column -->
+                    <ng-container matColumnDef="Title">
+                        <th mat-header-cell *matHeaderCellDef> Title </th>
+                        <td mat-cell *matCellDef="let element"> {{element.bookTitle}} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="User">
+                        <th mat-header-cell *matHeaderCellDef> User </th>
+                        <td mat-cell *matCellDef="let element"> {{element.firstName}} {{element.lastName}}</td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="Email">
+                        <th mat-header-cell *matHeaderCellDef> Email </th>
+                        <td mat-cell *matCellDef="let element"> {{element.email}}</td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="LoanedDate">
+                        <th mat-header-cell *matHeaderCellDef> Loaned date </th>
+                        <td mat-cell *matCellDef="let element"> {{element.loanedDate | date: 'MM/dd/YYYY, hh:mm a'}} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="options">
+                        <th mat-header-cell *matHeaderCellDef> Options</th>
+                        <td mat-cell *matCellDef="let element"> <button type="button" class="btn btn-success"
+                                (click)="submit(element.idBookLog)" ><i class="bi bi-arrow-return-left"></i>
+                            </button>
+
+                        </td>
+                    </ng-container>
+
+                    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                </table>
+
+                <!-- <mat-paginator #paginator [length]="totalRows" [pageIndex]="currentPage" [pageSize]="pageSize"
+                  [pageSizeOptions]="pageSizeOptions" (page)="pageChanged($event)" aria-label="Select page">
+                </mat-paginator>             -->
+            </div>
+        </div>
+    </div>
+</div>

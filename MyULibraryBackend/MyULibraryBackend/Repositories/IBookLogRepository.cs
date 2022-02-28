@@ -1,4 +1,6 @@
-﻿using MyULibraryBackend.Entities.Models;
+﻿using Microsoft.AspNetCore.JsonPatch;
+using MyULibraryBackend.Dtos;
+using MyULibraryBackend.Entities.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,9 +12,12 @@ namespace MyULibraryBackend.Repositories
     {
         List<BookLog> getAll();
         BookLog Get(long id);
+        bool GetBookReserved(long idBook, long idUser);
+        List<BookLog> Filter(string firstName, string lastName, string email);
         void Add(BookLog bookLog);
         void AddList(List<BookLog> booksLog);
         void Update(BookLog bookLog, BookLog entity);
+        void PatchBookLogAndBook(JsonPatchDocument<BookLogDto> patchBookDto, BookLog entity);
         void Delete(BookLog bookLog);
     }
 }

@@ -4,7 +4,11 @@
 
 export const environment = {
   production: false,
-  urlApi: 'https://localhost:44396/api/',
+  urlApi: 'https://myulibrarybackend.azurewebsites.net/api/',
+  roles:{
+    librarian: 1,
+    student:  2
+  }
 };
 
 /*

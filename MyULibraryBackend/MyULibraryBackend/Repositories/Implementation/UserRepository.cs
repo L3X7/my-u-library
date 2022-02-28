@@ -3,15 +3,19 @@ using MyULibraryBackend.Entities.Models;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using MyULibraryBackend.Dtos;
+using AutoMapper;
 
 namespace MyULibraryBackend.Repositories.Implementation
 {
     public class UserRepository : IUserRepository
     {
         readonly MyULibraryDbContext db;
-        public UserRepository(MyULibraryDbContext context)
+        private readonly IMapper mp;
+        public UserRepository(MyULibraryDbContext context, IMapper mapper)
         {
             db = context;
+            mp = mapper;
         }
         public List<User> getAll()
         {
@@ -39,6 +43,17 @@ namespace MyULibraryBackend.Repositories.Implementation
         {
             db.Remove(user);
             db.SaveChanges();
+        }
+
+        public UserDto Login(UserDto userDto)
+        {
+            User user = db.Users.Where(u => u.Email == userDto.Email && u.Password == userDto.Password).FirstOrDefault();
+            return mp.Map<UserDto>(user);
+        }
+
+        public User GetByEmail(string email)
+        {
+            return db.Users.FirstOrDefault(u => u.Email == email);
         }
     }
 }

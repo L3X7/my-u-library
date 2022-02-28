@@ -1,11 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using MyULibraryBackend.Entities.Models;
 using MyULibraryBackend.Repositories;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace MyULibraryBackend.Controllers
 {
@@ -43,6 +39,11 @@ namespace MyULibraryBackend.Controllers
             if (book == null)
             {
                 return BadRequest(new { code = 400, message = "Empty book" });
+            }
+            Book bookAlreadyExits = bookRepository.GetByTitle(book.Title);
+            if (bookAlreadyExits != null)
+            {
+                return Conflict(new { code = 409, message = "Book already exist" });
             }
             bookRepository.Add(book);
             return Ok(new { code = 200, message = "Book created" });

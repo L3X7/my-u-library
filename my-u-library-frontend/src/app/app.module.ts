@@ -12,8 +12,12 @@ import { UserDialogComponent } from './shared/ui-components/user-dialog/user-dia
 import { MaterialModule } from './modules/material.module';
 import { ReactiveFormsModule } from '@angular/forms';
 import { NgxSpinnerModule } from 'ngx-spinner';
+import { ToastrModule } from 'ngx-toastr';
 import { BookDialogComponent } from './shared/ui-components/book-dialog/book-dialog.component';
 import { LoadingInterceptor } from './interceptors/loading.interceptor';
+import { Error404Component } from './shared/pages/error404/error404.component';
+import { BookDetailDialogComponent } from './shared/ui-components/book-detail-dialog/book-detail-dialog.component';
+import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 
 @NgModule({
   declarations: [
@@ -21,6 +25,8 @@ import { LoadingInterceptor } from './interceptors/loading.interceptor';
     HomeComponent,
     UserDialogComponent,
     BookDialogComponent,
+    Error404Component,
+    BookDetailDialogComponent,
   ],
   imports: [
     BrowserModule,
@@ -32,7 +38,10 @@ import { LoadingInterceptor } from './interceptors/loading.interceptor';
     HttpClientModule,
     ReactiveFormsModule,
     MaterialModule,
-    NgxSpinnerModule
+    NgxSpinnerModule,
+    ToastrModule.forRoot({
+      positionClass: 'toast-top-right',
+    }),
   ],
   exports: [
 
@@ -42,7 +51,11 @@ import { LoadingInterceptor } from './interceptors/loading.interceptor';
       provide: HTTP_INTERCEPTORS,
       useClass: LoadingInterceptor,
       multi: true
-    }
+    },
+    {
+			provide: LocationStrategy,
+			useClass: HashLocationStrategy
+		},
   ],
   bootstrap: [AppComponent]
 })

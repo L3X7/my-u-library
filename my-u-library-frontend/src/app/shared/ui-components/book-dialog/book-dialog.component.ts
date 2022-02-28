@@ -13,7 +13,6 @@ export class BookDialogComponent implements OnInit {
   constructor(private fb: FormBuilder,
     private dialogRef: MatDialogRef<BookDialogComponent>,
     @Inject(MAT_DIALOG_DATA) data: any) {
-      console.log(data);
       this.genres = data;
      }
 

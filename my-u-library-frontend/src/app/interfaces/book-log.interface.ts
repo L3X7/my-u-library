@@ -1,7 +1,9 @@
 
 
 export interface IBookLog {
-    IdBook: number;
-    IdUser: number;
-    LoanedDate: string;
+    idBookLog: number;
+    idBook: number;
+    idUser: number;
+    loanedDate: string;
+    returnedDate: string;
 }

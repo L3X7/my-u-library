@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { catchError, retry, throwError } from 'rxjs';
+import { catchError,  throwError } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { IBookLog } from '../interfaces/book-log.interface';
 
@@ -10,15 +10,35 @@ export class BookLogService {
 
     get() {
         return this.http.get<any>(environment.urlApi.concat('booklog')).pipe(
-            retry(1),
             catchError(this.handleError)
         );
     }
-    postList(booksLog: IBookLog[]) {
-        return this.http.post<any>(environment.urlApi.concat('booklog/addBooksLog'), booksLog).pipe(
-            retry(1),
+
+    getBookReserved(idBook: number, idUser: number) {
+        return this.http.get<any>(environment.urlApi.concat('booklog/getBookReserved/' + idBook + '/' + idUser)).pipe(
             catchError(this.handleError)
         );
+    }
+
+
+    filter(query: string) {
+        return this.http.get<any>(environment.urlApi.concat('booklog/filter?', query)).pipe(
+            catchError(this.handleError)
+        );
+    }
+
+    postList(booksLog: IBookLog[]) {
+        return this.http.post<any>(environment.urlApi.concat('booklog/addBooksLog'), booksLog).pipe(
+            catchError(this.handleError)
+        );
+    }
+
+
+    PatchBookLogAndBook(id: number, currentDate: string) {
+        return this.http.patch<any>(environment.urlApi.concat('booklog/' + id),
+            [{ "op": "replace", "path": "/returnedDate", "value": currentDate }]).pipe(
+                catchError(this.handleError)
+            );
     }
 
 

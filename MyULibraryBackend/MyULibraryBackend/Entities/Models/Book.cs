@@ -20,9 +20,5 @@ namespace MyULibraryBackend.Entities.Models
         public Genre Genre { get; set; }
         public int Quantity { get; set; }
 
-
-        public List<BookLog> BookLogs { get; set; }
-
-
     }
 }

@@ -24,6 +24,7 @@ export class UserDialogComponent implements OnInit {
       lastName: ['', Validators.required],
       email: ['', Validators.required],
       idRole: ['', Validators.required],
+      password:['', Validators.required],
     });
   }
 
