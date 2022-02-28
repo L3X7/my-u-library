@@ -20,7 +20,7 @@ export class BookDialogComponent implements OnInit {
     this.form = this.fb.group({
       title: ['', Validators.required],
       author: ['', Validators.required],
-      publishedYear: ['', Validators.required],
+      publishedYear: ['', [Validators.required, Validators.min(1)]],
       idGenre: ['', Validators.required],
       quantity: ['', [Validators.required, Validators.min(1)]],
     });
