@@ -35,6 +35,8 @@ export class LoginComponent implements OnInit {
           } else {
             this.toastr.error('An error ocurred', 'Notification');
           }
+        } else {
+          this.toastr.error('An error ocurred', 'Notification');
         }
       }
     )

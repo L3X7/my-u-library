@@ -24,64 +24,106 @@ namespace MyULibraryBackend.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            List<User> users = userRepository.getAll();
-            return Ok(new { code = 200, message = "Get users", data = users });
+            try
+            {
+                List<User> users = userRepository.getAll();
+                return Ok(new { code = 200, message = "Get users", data = users });
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, "Internal server error");
+            }
         }
 
         [HttpGet("{id}")]
         public IActionResult Get(long id)
         {
-            User user = userRepository.Get(id);
-            if (user == null)
+            try
             {
-                return NotFound(new { code = 404, message = "User not found" });
+                User user = userRepository.Get(id);
+                if (user == null)
+                {
+                    return NotFound(new { code = 404, message = "User not found" });
+                }
+                return Ok(new { code = 200, message = "Get user", data = user });
             }
-            return Ok(new { code = 200, message = "Get user", data = user });
+            catch (Exception)
+            {
+                return StatusCode(500, "Internal server error");
+            }
+
         }
 
         [HttpPost]
         public IActionResult Post([FromBody] User user)
         {
-            if (user == null)
+
+            try
             {
-                return BadRequest(new { code = 400, message = "Empty user" });
+                if (user == null)
+                {
+                    return BadRequest(new { code = 400, message = "Empty user" });
+                }
+                User userAlreadyExist = userRepository.GetByEmail(user.Email);
+                if (userAlreadyExist != null)
+                {
+                    return Conflict(new { code = 409, message = "User already exist" });
+                }
+                userRepository.Add(user);
+                return Ok(new { code = 200, message = "User created" });
             }
-            User userAlreadyExist = userRepository.GetByEmail(user.Email);
-            if (userAlreadyExist != null)
+            catch (Exception)
             {
-                return Conflict(new { code = 409, message = "User already exist" });
+                return StatusCode(500, "Internal server error");
             }
-            userRepository.Add(user);
-            return Ok(new { code = 200, message = "User created" });
+
+
         }
 
 
         [HttpPut("{id}")]
         public IActionResult Put(long id, [FromBody] User user)
         {
-            if (user == null)
+            try
             {
-                return BadRequest(new { code = 400, message = "Empty user" });
+                if (user == null)
+                {
+                    return BadRequest(new { code = 400, message = "Empty user" });
+                }
+                User userUpdate = userRepository.Get(id);
+                if (userUpdate == null)
+                {
+                    return NotFound(new { code = 404, message = "User not found" });
+                }
+
+                return Ok(new { code = 200, message = "User updated" });
             }
-            User userUpdate = userRepository.Get(id);
-            if (userUpdate == null)
+            catch (Exception)
             {
-                return NotFound(new { code = 404, message = "User not found" });
+                return StatusCode(500, "Internal server error");
             }
 
-            return Ok(new { code = 200, message = "User updated" });
         }
 
         [HttpDelete("{id}")]
         public IActionResult Delete(long id)
         {
-            User user = userRepository.Get(id);
-            if (user == null)
+
+            try
             {
-                return NotFound(new { code = 404, message = "User not found" });
+                User user = userRepository.Get(id);
+                if (user == null)
+                {
+                    return NotFound(new { code = 404, message = "User not found" });
+                }
+                userRepository.Delete(user);
+                return Ok(new { code = 200, message = "User deleted" });
             }
-            userRepository.Delete(user);
-            return Ok(new { code = 200, message = "User deleted" });
+            catch (Exception)
+            {
+                return StatusCode(500, "Internal server error");
+            }
+
         }
 
     }

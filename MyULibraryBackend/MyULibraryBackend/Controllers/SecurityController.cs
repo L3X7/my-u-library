@@ -19,16 +19,24 @@ namespace MyULibraryBackend.Controllers
         [HttpPost("login")]
         public IActionResult Post([FromBody] UserDto user)
         {
-            if (user == null)
+            try
             {
-                return BadRequest(new { code = 400, message = "Empty user" });
+                if (user == null)
+                {
+                    return BadRequest(new { code = 400, message = "Empty user" });
+                }
+                UserDto userLogin = userRepository.Login(user);
+                if (userLogin == null)
+                {
+                    return Unauthorized(new { code = 401, message = "Authentication failed" });
+                }
+                return Ok(new { code = 200, message = "Successful user login", data = userLogin });
             }
-            UserDto userLogin = userRepository.Login(user);
-            if(userLogin == null)
+            catch (System.Exception)
             {
-                return Unauthorized(new { code = 401, message = "Authentication failed" });
+                return StatusCode(500, "Internal server error");
             }
-            return Ok(new { code = 200, message = "Successful user login", data = userLogin });
+
         }
 
     }

@@ -21,59 +21,94 @@ namespace MyULibraryBackend.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            List<Role> roles = roleRepository.getAll();
-            return Ok(new { code = 200, message = "Get roles", data = roles });
+            try
+            {
+                List<Role> roles = roleRepository.getAll();
+                return Ok(new { code = 200, message = "Get roles", data = roles });
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, "Internal server error");
+            }
         }
 
         [HttpGet("{id}")]
         public IActionResult Get(long id)
         {
-            Role role = roleRepository.Get(id);
-            if (role == null)
+            try
             {
-                return NotFound(new { code = 404, message = "Role not found" });
+                Role role = roleRepository.Get(id);
+                if (role == null)
+                {
+                    return NotFound(new { code = 404, message = "Role not found" });
+                }
+                return Ok(new { code = 200, message = "Get user", data = role });
             }
-            return Ok(new { code = 200, message = "Get user", data = role });
+            catch (Exception)
+            {
+                return StatusCode(500, "Internal server error");
+            }
         }
 
         [HttpPost]
         public IActionResult Post([FromBody] Role role)
         {
-            if (role == null)
+            try
             {
-                return BadRequest(new { code = 400, message = "Empty role" });
+                if (role == null)
+                {
+                    return BadRequest(new { code = 400, message = "Empty role" });
+                }
+                roleRepository.Add(role);
+                return Ok(new { code = 200, message = "Role created" });
             }
-            roleRepository.Add(role);
-            return Ok(new { code = 200, message = "Role created" });
+            catch (Exception)
+            {
+                return StatusCode(500, "Internal server error");
+            }
         }
 
 
         [HttpPut("{id}")]
         public IActionResult Put(long id, [FromBody] User user)
         {
-            if (user == null)
+            try
             {
-                return BadRequest(new { code = 400, message = "Empty role" });
-            }
-            Role roleUpdate = roleRepository.Get(id);
-            if (roleUpdate == null)
-            {
-                return NotFound(new { code = 404, message = "Role not found" });
-            }
+                if (user == null)
+                {
+                    return BadRequest(new { code = 400, message = "Empty role" });
+                }
+                Role roleUpdate = roleRepository.Get(id);
+                if (roleUpdate == null)
+                {
+                    return NotFound(new { code = 404, message = "Role not found" });
+                }
 
-            return Ok(new { code = 200, message = "Role updated" });
+                return Ok(new { code = 200, message = "Role updated" });
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, "Internal server error");
+            }
         }
 
         [HttpDelete("{id}")]
         public IActionResult Delete(long id)
         {
-            Role role = roleRepository.Get(id);
-            if (role == null)
+            try
             {
-                return NotFound(new { code = 404, message = "Role not found" });
+                Role role = roleRepository.Get(id);
+                if (role == null)
+                {
+                    return NotFound(new { code = 404, message = "Role not found" });
+                }
+                roleRepository.Delete(role);
+                return Ok(new { code = 200, message = "Role deleted" });
             }
-            roleRepository.Delete(role);
-            return Ok(new { code = 200, message = "Role deleted" });
+            catch (Exception)
+            {
+                return StatusCode(500, "Internal server error");
+            }
         }
     }
 }

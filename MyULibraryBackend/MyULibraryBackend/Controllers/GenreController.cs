@@ -23,8 +23,15 @@ namespace MyULibraryBackend.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            List<Genre> books = genreRepository.getAll();
-            return Ok(new { code = 200, message = "Get genres", data = books });
+            try
+            {
+                List<Genre> books = genreRepository.getAll();
+                return Ok(new { code = 200, message = "Get genres", data = books });
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, "Internal server error");
+            }
         }
     }
 }
