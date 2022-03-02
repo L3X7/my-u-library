@@ -125,7 +125,7 @@ namespace MyULibraryBackend.Repositories.Implementation
 
         public bool GetBookReserved(long idBook, long idUser)
         {
-            BookLog bookReserved = db.BookLogs.Where(b => b.IdBook == idBook && b.IdBook == idUser && b.ReturnedDate == null).FirstOrDefault();
+            BookLog bookReserved = db.BookLogs.Where(b => b.IdBook == idBook && b.IdUser == idUser && b.ReturnedDate == null).FirstOrDefault();
             if (bookReserved == null)
             {
                 return false;
