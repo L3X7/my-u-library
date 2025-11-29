@@ -9,12 +9,14 @@ namespace MyULibraryBackend.Repositories
 {
     public interface IUserRepository
     {
-        List<User> getAll();
-        User Get(long id);
-        User GetByEmail(string email);
-        UserDto Login(UserDto user);
-        void Add(User user);
-        void Update(User user, User entity);
+        Task<List<User>> GetAllAsync();
+        Task<User?> GetByIdAsync(long id);
+        Task<User?> GetByEmailAsync(string email);
+        Task<User?> GetByUsernameAsync(string username);
+        Task<User?> GetByUsernameWithRolesAsync(string username);
+        Task AddAsync(User user);
         void Delete(User user);
+        Task SaveChangesAsync();
+
     }
 }

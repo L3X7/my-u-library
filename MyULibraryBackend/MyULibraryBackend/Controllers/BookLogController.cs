@@ -1,41 +1,36 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.JsonPatch;
+﻿
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MyULibraryBackend.Dtos;
-using MyULibraryBackend.Entities.Models;
-using MyULibraryBackend.Repositories;
+using MyULibraryBackend.Services;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace MyULibraryBackend.Controllers
 {
     [Route("api/booklog")]
     [ApiController]
+    [Authorize(Policy = "RequireAdmin, RequireLibrarian")]
     public class BookLogController : ControllerBase
     {
-        private readonly IBookLogRepository bookLogRepository;
-        private readonly IMapper mp;
+        private readonly IBookLogService _bookLogService;
 
-        public BookLogController(IBookLogRepository repository, IMapper mapper)
+        public BookLogController(IBookLogService bookLogService)
         {
-            bookLogRepository = repository;
-            mp = mapper;
+            _bookLogService = bookLogService;
         }
 
-        [HttpPost("addBooksLog")]
-        public IActionResult PostList([FromBody] List<BookLogDto> booksLogDto)
+        [HttpPost("list")]
+        public async Task<IActionResult> PostList([FromBody] List<CreateBookLogDto> request)
         {
             try
             {
-                if (booksLogDto == null)
+                if (request == null)
                 {
                     return BadRequest(new { code = 400, message = "Empty book logs" });
                 }
-                List<BookLog> booksLog = mp.Map<List<BookLog>>(booksLogDto);
-                bookLogRepository.AddList(booksLog);
+                await _bookLogService.AddBookLogListAsync(request);
                 return Ok(new { code = 200, message = "book logs created" });
             }
             catch (Exception)
@@ -44,39 +39,13 @@ namespace MyULibraryBackend.Controllers
             }
         }
 
-        [HttpPatch("{id}")]
-        public IActionResult Patch(long id, [FromBody] JsonPatchDocument<BookLogDto> patchBookDto)
-        {
-            try
-            {
-                if (patchBookDto == null)
-                {
-                    return BadRequest(new { code = 400, message = "book log not found" });
-                }
-
-                BookLog bookLogEntity = bookLogRepository.Get(id);
-                if (bookLogEntity == null)
-                {
-                    return NotFound(new { code = 404, message = "book log not found" });
-                }
-
-                bookLogRepository.PatchBookLogAndBook(patchBookDto, bookLogEntity);
-                return Ok(new { code = 200, message = "book log updated" });
-            }
-            catch (Exception)
-            {
-                return StatusCode(500, "Internal server error");
-            }
-        }
-
         [HttpGet("filter")]
-        public IActionResult Filter(string firstName = "", string lastName = "", string email = "")
+        public async Task<IActionResult> Filter([FromQuery] BookLogFilter request)
         {
             try
             {
-                List<BookLog> booksLog = bookLogRepository.Filter(firstName, lastName, email);
-                List<BookLogDto> booksLogDto = mp.Map<List<BookLogDto>>(booksLog);
-                return Ok(new { code = 200, message = "Get book logs", data = booksLogDto });
+                var bookLogs = await _bookLogService.GetByFilterBookLogAsync(request);
+                return Ok(new { code = 200, message = "Get book logs", data = bookLogs });
             }
             catch (Exception)
             {
@@ -85,25 +54,71 @@ namespace MyULibraryBackend.Controllers
         }
 
         [HttpGet("getBookReserved/{idBook}/{idUser}")]
-        public IActionResult GetBookReserved(int idBook, int idUser)
+        public async Task<IActionResult> GetBookReserved(long idBook, long idUser)
         {
             try
             {
-                bool isReserved = bookLogRepository.GetBookReserved(idBook, idUser);
-                if (isReserved)
-                {
-                    return Unauthorized(new { code = 401, message = "Book not available" });
-                }
-                else
-                {
-                    return Ok(new { code = 200, message = "Book available" });
-                }
+                bool isReserved = await _bookLogService.GetBookLogReservedAsync(idBook, idUser);
+
+                return Ok(new { code = 200, message = "Book status", data = isReserved });
             }
             catch (Exception)
             {
                 return StatusCode(500, "Internal server error");
             }
-            
+
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Post([FromBody] CreateBookLogDto request)
+        {
+            try
+            {
+                if (request == null)
+                {
+                    return BadRequest(new { code = 400, message = "Empty book logs" });
+                }
+                await _bookLogService.AddBookLogAsync(request);
+                return Ok(new { code = 200, message = "book log created" });
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, "Internal server error");
+            }
+        }
+
+        [HttpPatch("{id}")]
+        public async Task<IActionResult> Patch(long id, [FromBody] UpdateBookLogDto request)
+        {
+            try
+            {
+                if (request == null)
+                {
+                    return BadRequest(new { code = 400, message = "Book log not found" });
+                }
+
+                await _bookLogService.UpdateBookLogAsync(id, request);
+                return Ok(new { code = 200, message = "Book log updated" });
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, "Internal server error");
+            }
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(long id)
+        {
+
+            try
+            {
+                await _bookLogService.DeleteBookLog(id);
+                return Ok(new { code = 200, message = "Book log deleted" });
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, "Internal server error");
+            }
         }
     }
 }

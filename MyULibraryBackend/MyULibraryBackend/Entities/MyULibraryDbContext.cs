@@ -15,5 +15,6 @@ namespace MyULibraryBackend.Entities
         public DbSet<Genre> Genres { get; set; }
         public DbSet<Role> Roles { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
     }
 }

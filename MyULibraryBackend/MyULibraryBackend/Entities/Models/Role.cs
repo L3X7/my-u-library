@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Newtonsoft.Json;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -6,11 +7,14 @@ namespace MyULibraryBackend.Entities.Models
 {
     public class Role
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int IdRole { get; set; }
-        [Column(TypeName = "nvarchar(50)")]
-        public string RoleName { get; set; }
+        public long Id { get; set; }
+
+        [MaxLength(50)]
+        public string RoleName { get; set; } = string.Empty;
+
+        [JsonIgnore]
+        public List<User> Users { get; set; } = null!;
 
     }
 }
+    

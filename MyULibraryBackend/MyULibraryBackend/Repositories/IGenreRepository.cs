@@ -8,10 +8,11 @@ namespace MyULibraryBackend.Repositories
 {
     public interface IGenreRepository
     {
-        List<Genre> getAll();
-        Genre Get(long id);
-        void Add(Genre user);
-        void Update(Genre user, Genre entity);
+        Task<List<Genre>> GetAllAsync();
+        Task<Genre?> GetByIdAsync(long id);
+        Task<Genre?> GetByNameAsync(string genreName);
+        Task AddAsync(Genre user);
         void Delete(Genre user);
+        Task SaveChangesAsync();
     }
 }

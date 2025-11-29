@@ -1,25 +1,38 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace MyULibraryBackend.Entities.Models
 {
     public class User
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public long IdUser { get; set; }
-        [Column(TypeName = "nvarchar(50)")]
-        public string FirstName { get; set; }
-        [Column(TypeName = "nvarchar(50)")]
-        public string LastName { get; set; }
-        [Column(TypeName = "nvarchar(150)")]
-        public string Email { get; set; }
-        public int IdRole { get; set; }
-        [ForeignKey("IdRole")]
-        public Role Role { get; set; }
-        [Column(TypeName = "nvarchar(150)")]
-        public string Password { get; set; }
+        public long Id { get; set; }
 
-    }    
+        [MaxLength(50)]
+        public string FirstName { get; set; } = string.Empty;
+
+        [MaxLength(50)]
+        public string LastName { get; set; } = string.Empty;
+
+        [MaxLength(50)]
+        public string Username { get; set; } = string.Empty;
+
+        [MaxLength(150)]
+        [EmailAddress]
+        public string Email { get; set; } = string.Empty;
+
+        [JsonIgnore]
+        public string PasswordHash { get; set; } = string.Empty;
+
+        public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
+
+        public DateTime? UpdatedDate { get; set; }
+
+
+        public List<Role> Roles { get; set; } = new();
+
+        public List<RefreshToken> RefreshTokens { get; set; } = new();
+    }
 }

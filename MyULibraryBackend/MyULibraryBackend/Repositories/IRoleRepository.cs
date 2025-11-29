@@ -1,14 +1,17 @@
 ﻿using MyULibraryBackend.Entities.Models;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace MyULibraryBackend.Repositories
 {
     public interface IRoleRepository
     {
-        List<Role> getAll();
-        Role Get(long id);
-        void Add(Role user);
-        void Update(Role user, Role entity);
-        void Delete(Role user);
+        Task<List<Role>> GetAllAsync();
+        Task<List<Role>> GetByIdsAsync(List<long> ids);
+        Task<Role?> GetByIdAsync(long id);
+        Task<Role?> GetByRoleNameAsync(string roleName);
+        Task AddAsync(Role role);
+        void Delete(Role role);
+        Task SaveChangesAsync();
     }
 }

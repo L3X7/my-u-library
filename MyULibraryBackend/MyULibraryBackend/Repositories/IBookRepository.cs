@@ -1,4 +1,5 @@
-﻿using MyULibraryBackend.Entities.Models;
+﻿using MyULibraryBackend.Dtos;
+using MyULibraryBackend.Entities.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,12 +9,12 @@ namespace MyULibraryBackend.Repositories
 {
     public interface IBookRepository
     {
-        List<Book> getAll();
-        Book Get(long id);
-        Book GetByTitle(string title);
-        List<Book> GetByFilter(string title, string author, string genre);
-        void Add(Book user);
-        void Update(Book user, Book entity);
-        void Delete(Book user);
+        Task<List<Book>> GetAllAsync();
+        Task<Book?> GetByIdAsync(long id);
+        Task<Book?> GetByTitleAsync(string title);
+        Task<List<Book>> GetByFilterAsync(BookFilterDto filter);
+        Task AddAsync(Book book);
+        void Delete(Book book);
+        Task SaveChangesAsync();
     }
 }

@@ -6,11 +6,9 @@ namespace MyULibraryBackend.Entities.Models
 {
     public class Genre
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int IdGenre { get; set; }
-        [Column(TypeName = "nvarchar(200)")]
-        public string GenreName { get; set; }
+        public int Id { get; set; }
 
+        [MaxLength(50)]
+        public string GenreName { get; set; } = string.Empty;
     }
 }

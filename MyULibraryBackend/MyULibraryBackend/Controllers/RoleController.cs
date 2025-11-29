@@ -1,29 +1,31 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
-using MyULibraryBackend.Repositories;
-using MyULibraryBackend.Entities.Models;
+using MyULibraryBackend.Services;
+using MyULibraryBackend.Dtos;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MyULibraryBackend.Controllers
 {
     [Route("api/role")]
     [ApiController]
+    [Authorize(Policy = "RequireAdmin")]
     public class RoleController : ControllerBase
     {
-        private readonly IRoleRepository roleRepository;
+        private readonly IRoleService _roleService;
 
-        public RoleController(IRoleRepository repository)
+        public RoleController(IRoleService roleService)
         {
-            roleRepository = repository;
+            _roleService = roleService;
         }
 
         [HttpGet]
-        public IActionResult Get()
+        public async Task<IActionResult> Get()
         {
             try
             {
-                List<Role> roles = roleRepository.getAll();
+                List<RoleDto> roles = await _roleService.GetAllRolesAsync();
                 return Ok(new { code = 200, message = "Get roles", data = roles });
             }
             catch (Exception)
@@ -33,11 +35,11 @@ namespace MyULibraryBackend.Controllers
         }
 
         [HttpGet("{id}")]
-        public IActionResult Get(long id)
+        public async Task<IActionResult> Get(long id)
         {
             try
             {
-                Role role = roleRepository.Get(id);
+                RoleDto role = await _roleService.GetRoleByIdAsync(id);
                 if (role == null)
                 {
                     return NotFound(new { code = 404, message = "Role not found" });
@@ -51,15 +53,15 @@ namespace MyULibraryBackend.Controllers
         }
 
         [HttpPost]
-        public IActionResult Post([FromBody] Role role)
+        public async Task<IActionResult> Post([FromBody] CreateRoleDto request)
         {
             try
             {
-                if (role == null)
+                if (request == null)
                 {
                     return BadRequest(new { code = 400, message = "Empty role" });
                 }
-                roleRepository.Add(role);
+                await _roleService.CreateRoleAsync(request);
                 return Ok(new { code = 200, message = "Role created" });
             }
             catch (Exception)
@@ -70,19 +72,15 @@ namespace MyULibraryBackend.Controllers
 
 
         [HttpPut("{id}")]
-        public IActionResult Put(long id, [FromBody] User user)
+        public async Task<IActionResult> Put(long id, [FromBody] UpdateRoleDto request)
         {
             try
             {
-                if (user == null)
+                if (request == null)
                 {
                     return BadRequest(new { code = 400, message = "Empty role" });
                 }
-                Role roleUpdate = roleRepository.Get(id);
-                if (roleUpdate == null)
-                {
-                    return NotFound(new { code = 404, message = "Role not found" });
-                }
+                await _roleService.UpdateRoleAsync(id, request);
 
                 return Ok(new { code = 200, message = "Role updated" });
             }
@@ -93,16 +91,11 @@ namespace MyULibraryBackend.Controllers
         }
 
         [HttpDelete("{id}")]
-        public IActionResult Delete(long id)
+        public async Task<IActionResult> Delete(long id)
         {
             try
             {
-                Role role = roleRepository.Get(id);
-                if (role == null)
-                {
-                    return NotFound(new { code = 404, message = "Role not found" });
-                }
-                roleRepository.Delete(role);
+                await _roleService.DeleteRoleAsync(id);
                 return Ok(new { code = 200, message = "Role deleted" });
             }
             catch (Exception)

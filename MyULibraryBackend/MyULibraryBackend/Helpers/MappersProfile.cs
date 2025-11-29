@@ -28,6 +28,7 @@ namespace MyULibraryBackend.Helpers
             CreateMap<Genre, GenreDto>();
             CreateMap<Role, RoleDto>();
             CreateMap<User, UserDto>();
+            CreateMap<RefreshToken, RefreshTokenDto>();
         }
     }
 }

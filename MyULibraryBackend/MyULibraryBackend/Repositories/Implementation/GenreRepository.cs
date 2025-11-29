@@ -1,4 +1,5 @@
-﻿using MyULibraryBackend.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using MyULibraryBackend.Entities;
 using MyULibraryBackend.Entities.Models;
 using System;
 using System.Collections.Generic;
@@ -10,35 +11,40 @@ namespace MyULibraryBackend.Repositories.Implementation
     public class GenreRepository : IGenreRepository
     {
 
-        readonly MyULibraryDbContext db;
+        private readonly MyULibraryDbContext _db;
         public GenreRepository(MyULibraryDbContext context)
         {
-            db = context;
+            _db = context;
         }
 
-        public void Add(Genre user)
+        public async Task AddAsync(Genre genre)
         {
-            throw new NotImplementedException();
+            await _db.Genres.AddAsync(genre);
         }
 
-        public void Delete(Genre user)
+        public void Delete(Genre genre)
         {
-            throw new NotImplementedException();
+            _db.Genres.Remove(genre);
         }
 
-        public Genre Get(long id)
+        public async Task<Genre?> GetByIdAsync(long id)
         {
-            throw new NotImplementedException();
+            return await _db.Genres.FirstOrDefaultAsync(g => g.Id == id);
         }
 
-        public List<Genre> getAll()
+        public async Task<List<Genre>> GetAllAsync()
         {
-            return db.Genres.ToList();
+            return await _db.Genres.ToListAsync();
         }
 
-        public void Update(Genre user, Genre entity)
+        public async Task<Genre?> GetByNameAsync(string genreName)
         {
-            throw new NotImplementedException();
+            return await _db.Genres.FirstOrDefaultAsync(g => g.GenreName == genreName);
+        }
+
+        public async Task SaveChangesAsync()
+        {
+            await _db.SaveChangesAsync();
         }
     }
 }

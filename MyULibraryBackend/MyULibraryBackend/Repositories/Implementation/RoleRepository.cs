@@ -1,4 +1,5 @@
-﻿using MyULibraryBackend.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using MyULibraryBackend.Entities;
 using MyULibraryBackend.Entities.Models;
 using System;
 using System.Collections.Generic;
@@ -10,35 +11,45 @@ namespace MyULibraryBackend.Repositories.Implementation
     public class RoleRepository : IRoleRepository
     {
 
-        readonly MyULibraryDbContext db;
+        private readonly MyULibraryDbContext _db;
         public RoleRepository(MyULibraryDbContext context)
         {
-            db = context;
+            _db = context;
         }
 
-        public void Add(Role user)
+        public async Task AddAsync(Role role)
         {
-            throw new NotImplementedException();
+            await _db.Roles.AddAsync(role);
         }
 
-        public void Delete(Role user)
+        public void Delete(Role role)
         {
-            throw new NotImplementedException();
+            _db.Roles.Remove(role);
         }
 
-        public Role Get(long id)
+        public async Task<List<Role>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            return await _db.Roles.ToListAsync();
         }
 
-        public List<Role> getAll()
+        public async Task<Role?> GetByIdAsync(long id)
         {
-            return db.Roles.ToList();
+            return await _db.Roles.FirstOrDefaultAsync(r => r.Id == id);
         }
 
-        public void Update(Role user, Role entity)
+        public async Task<List<Role>> GetByIdsAsync(List<long> roles)
         {
-            throw new NotImplementedException();
+            return await _db.Roles.Where(a => roles.Contains(a.Id)).ToListAsync();
+        }
+
+        public async Task<Role?> GetByRoleNameAsync(string roleName)
+        {
+            return await _db.Roles.FirstOrDefaultAsync(r => r.RoleName == roleName);
+        }
+
+        public async Task SaveChangesAsync()
+        {
+            await _db.SaveChangesAsync();
         }
     }
 }

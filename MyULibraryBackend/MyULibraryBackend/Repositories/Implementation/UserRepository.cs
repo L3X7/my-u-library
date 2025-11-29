@@ -3,57 +3,56 @@ using MyULibraryBackend.Entities.Models;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
-using MyULibraryBackend.Dtos;
-using AutoMapper;
+using System.Threading.Tasks;
 
 namespace MyULibraryBackend.Repositories.Implementation
 {
     public class UserRepository : IUserRepository
     {
-        readonly MyULibraryDbContext db;
-        private readonly IMapper mp;
-        public UserRepository(MyULibraryDbContext context, IMapper mapper)
+        private readonly MyULibraryDbContext _db;
+        public UserRepository(MyULibraryDbContext context)
         {
-            db = context;
-            mp = mapper;
+            _db = context;
         }
-        public List<User> getAll()
-        {
-            return db.Users.Include(r => r.Role).ToList();
-        }
-        public User Get(long id)
-        {
-            return db.Users.FirstOrDefault(u => u.IdUser == id);
-        }
-        public void Add(User user)
-        {
-            db.Users.Add(user);
-            db.SaveChanges();
-        }
-        public void Update(User user, User entity)
-        {
-            user.FirstName = entity.FirstName;
-            user.LastName = entity.LastName;
-            user.Email = entity.Email;
-            user.IdRole = entity.IdRole;
-            db.SaveChanges();
 
+        public async Task AddAsync(User user)
+        {
+            await _db.Users.AddAsync(user);
         }
+
         public void Delete(User user)
         {
-            db.Remove(user);
-            db.SaveChanges();
+            _db.Users.Remove(user);
         }
 
-        public UserDto Login(UserDto userDto)
+        public async Task<List<User>> GetAllAsync()
         {
-            User user = db.Users.Where(u => u.Email == userDto.Email && u.Password == userDto.Password).FirstOrDefault();
-            return mp.Map<UserDto>(user);
+            return await _db.Users.ToListAsync();
         }
 
-        public User GetByEmail(string email)
+        public async Task<User?> GetByEmailAsync(string email)
         {
-            return db.Users.FirstOrDefault(u => u.Email == email);
+            return await _db.Users.FirstOrDefaultAsync(u => u.Email == email);
+        }
+
+        public async Task<User?> GetByIdAsync(long id)
+        {
+            return await _db.Users.FirstOrDefaultAsync(u => u.Id == id);
+        }
+
+        public async Task<User?> GetByUsernameAsync(string username)
+        {
+            return await _db.Users.FirstOrDefaultAsync(u => u.Username == username);
+        }
+
+        public async Task<User?> GetByUsernameWithRolesAsync(string username)
+        {
+            return await _db.Users.Include(r => r.Roles).FirstOrDefaultAsync(u => u.Username == username);
+        }
+
+        public async Task SaveChangesAsync()
+        {
+            await _db.SaveChangesAsync();
         }
     }
 }

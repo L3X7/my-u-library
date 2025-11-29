@@ -1,46 +1,31 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MyULibraryBackend.Entities.Models;
-using MyULibraryBackend.Repositories;
+using MyULibraryBackend.Dtos;
+using MyULibraryBackend.Services;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace MyULibraryBackend.Controllers
 {
     [Route("api/user")]
     [ApiController]
+    [Authorize(Policy = "RequireAdmin, RequireLibrarian")]
     public class UserController : ControllerBase
     {
 
-        private readonly IUserRepository userRepository;
-
-        public UserController(IUserRepository repository)
+        private readonly IUserService _userService;
+        public UserController(IUserService userService)
         {
-            userRepository = repository;
-        }
-
-        [HttpGet]
-        public IActionResult Get()
-        {
-            try
-            {
-                List<User> users = userRepository.getAll();
-                return Ok(new { code = 200, message = "Get users", data = users });
-            }
-            catch (Exception)
-            {
-                return StatusCode(500, "Internal server error");
-            }
+            _userService = userService;
         }
 
         [HttpGet("{id}")]
-        public IActionResult Get(long id)
+        public async Task<IActionResult> Get(long id)
         {
             try
             {
-                User user = userRepository.Get(id);
+                UserDto user = await _userService.GetUserByIdAsync(id);
                 if (user == null)
                 {
                     return NotFound(new { code = 404, message = "User not found" });
@@ -55,46 +40,34 @@ namespace MyULibraryBackend.Controllers
         }
 
         [HttpPost]
-        public IActionResult Post([FromBody] User user)
+        public async Task<IActionResult> Post([FromBody] CreateUserDto request)
         {
-
             try
             {
-                if (user == null)
+                if (request == null)
                 {
                     return BadRequest(new { code = 400, message = "Empty user" });
                 }
-                User userAlreadyExist = userRepository.GetByEmail(user.Email);
-                if (userAlreadyExist != null)
-                {
-                    return Conflict(new { code = 409, message = "User already exist" });
-                }
-                userRepository.Add(user);
+                await _userService.CreateUserAsync(request);
                 return Ok(new { code = 200, message = "User created" });
             }
             catch (Exception)
             {
                 return StatusCode(500, "Internal server error");
             }
-
-
         }
 
 
         [HttpPut("{id}")]
-        public IActionResult Put(long id, [FromBody] User user)
+        public async Task<IActionResult> Put(long id, [FromBody] UpdateUserDto request)
         {
             try
             {
-                if (user == null)
+                if (request == null)
                 {
                     return BadRequest(new { code = 400, message = "Empty user" });
                 }
-                User userUpdate = userRepository.Get(id);
-                if (userUpdate == null)
-                {
-                    return NotFound(new { code = 404, message = "User not found" });
-                }
+                await _userService.UpdateUserAsync(id, request);
 
                 return Ok(new { code = 200, message = "User updated" });
             }
@@ -102,29 +75,35 @@ namespace MyULibraryBackend.Controllers
             {
                 return StatusCode(500, "Internal server error");
             }
-
         }
 
         [HttpDelete("{id}")]
-        public IActionResult Delete(long id)
+        public async Task<IActionResult> Delete(long id)
         {
 
             try
             {
-                User user = userRepository.Get(id);
-                if (user == null)
-                {
-                    return NotFound(new { code = 404, message = "User not found" });
-                }
-                userRepository.Delete(user);
+                await _userService.DeleteUserAsync(id);
                 return Ok(new { code = 200, message = "User deleted" });
             }
             catch (Exception)
             {
                 return StatusCode(500, "Internal server error");
             }
-
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
+        {
+            try
+            {
+                List<UserDto> users = await _userService.GetAllUsersAsync();
+                return Ok(new { code = 200, message = "Get users", data = users });
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, "Internal server error");
+            }
+        }
     }
 }

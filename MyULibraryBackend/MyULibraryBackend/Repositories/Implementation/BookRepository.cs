@@ -1,63 +1,70 @@
-﻿using MyULibraryBackend.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using MyULibraryBackend.Dtos;
+using MyULibraryBackend.Entities;
 using MyULibraryBackend.Entities.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
 
 namespace MyULibraryBackend.Repositories.Implementation
 {
     public class BookRepository : IBookRepository
     {
 
-        readonly MyULibraryDbContext db;
+        private readonly MyULibraryDbContext _db;
         public BookRepository(MyULibraryDbContext context)
         {
-            db = context;
+            _db = context;
         }
 
-        public void Add(Book book)
+        public async Task AddAsync(Book book)
         {
-            db.Books.Add(book);
-            db.SaveChanges();
+            await _db.Books.AddAsync(book);
         }
 
         public void Delete(Book book)
         {
-            throw new NotImplementedException();
+            _db.Remove(book);
         }
 
-        public Book Get(long id)
+        public async Task<Book?> GetByIdAsync(long id)
         {
-            throw new NotImplementedException();
+            return await _db.Books.FirstOrDefaultAsync(b => b.Id == id);
         }
 
-        public Book GetByTitle(string title)
+        public async Task<Book?> GetByTitleAsync(string title)
         {
-            return db.Books.Where(b => b.Title == title).FirstOrDefault();
+            return await _db.Books.FirstOrDefaultAsync(b => b.Title == title);
         }
 
-        public List<Book> getAll()
+        public async Task<List<Book>> GetAllAsync()
         {
-            return db.Books.Include(g => g.Genre).ToList();
+            return await _db.Books.ToListAsync();
         }
 
-        public List<Book> GetByFilter(string title = "", string author = "", string genre = "")
+        public async Task<List<Book>> GetByFilterAsync(BookFilterDto filter)
         {
-            if((title == "" || title == null) && (author == "" || author == null) && (genre == "" || genre == null))
-            {
-                return db.Books.Include(b => b.Genre).ToList();
-            }
-            else
-            {
-                return db.Books.Include(b => b.Genre).Where(b => ((title == "" || title == null) || b.Title.ToLower().Contains(title.Trim().ToLower())) && ((author == "" || author == null) || b.Author.ToLower().Contains(author.Trim().ToLower())) && ((genre == "" || genre == null) || b.Genre.GenreName.ToLower().Contains(genre.Trim().ToLower()))).ToList();
-            }            
+            var query = _db.Books.Include(g => g.Genre).AsNoTracking().AsQueryable();
 
+            if (!string.IsNullOrWhiteSpace(filter.Title))
+                query = query.Where(b => b.Title.Contains(filter.Title));
+
+            if (!string.IsNullOrWhiteSpace(filter.Author))
+                query = query.Where(b => b.Author.Contains(filter.Author));
+
+            if (!string.IsNullOrWhiteSpace(filter.Genre))
+                query = query.Where(b => b.Genre.GenreName.Contains(filter.Genre));
+
+            if (filter.Year.HasValue)
+                query = query.Where(b => b.PublishedYear == filter.Year);
+
+            return await query.ToListAsync();
         }
 
-        public void Update(Book book, Book entity)
+        public async Task SaveChangesAsync()
         {
-            throw new NotImplementedException();
+            await _db.SaveChangesAsync();
         }
     }
 }
