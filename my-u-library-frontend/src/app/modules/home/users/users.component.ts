@@ -7,7 +7,7 @@ import { IUser } from 'src/app/interfaces/user.interface';
 import { UserDialogComponent } from 'src/app/shared/ui-components/user-dialog/user-dialog.component';
 import { RoleService } from 'src/app/services/role.service';
 import { IRole } from 'src/app/interfaces/role.interface';
-import { ToastrService } from 'ngx-toastr';
+// import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-users',
@@ -27,7 +27,7 @@ export class UsersComponent implements OnInit {
   @ViewChild(MatPaginator)
   paginator!: MatPaginator;
 
-  constructor(private userService: USerService, private dialog: MatDialog, private roleService: RoleService, private toastr: ToastrService) { }
+  constructor(private userService: USerService, private dialog: MatDialog, private roleService: RoleService, /*private toastr: ToastrService*/) { }
 
   ngAfterViewInit() {
     // this.dataSource.paginator = this.paginator;
@@ -101,7 +101,7 @@ export class UsersComponent implements OnInit {
         });
       },
       (error) => {
-        this.toastr.error('An error ocurred', 'Notification');
+        // this.toastr.error('An error ocurred', 'Notification');
       }
     );
   }
@@ -110,14 +110,14 @@ export class UsersComponent implements OnInit {
     this.userService.post(user).subscribe(
       (response) => {
         this.loadData();
-        this.toastr.success('User saved!', 'Notification');
+        // this.toastr.success('User saved!', 'Notification');
       },
       (error) => {
         if (error.errorCode) {
           if(error.errorCode == 409){
-            this.toastr.error('User already exist', 'Notification');
+            // this.toastr.error('User already exist', 'Notification');
           } else{
-            this.toastr.error('An error ocurred', 'Notification');
+            // this.toastr.error('An error ocurred', 'Notification');
           }          
         }
       }

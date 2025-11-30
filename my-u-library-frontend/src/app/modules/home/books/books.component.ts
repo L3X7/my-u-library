@@ -6,7 +6,7 @@ import { IGenre } from 'src/app/interfaces/genre.interface';
 import { BookService } from 'src/app/services/book.service';
 import { GenreService } from 'src/app/services/genre.service';
 import { BookDialogComponent } from 'src/app/shared/ui-components/book-dialog/book-dialog.component';
-import { ToastrService } from 'ngx-toastr';
+// import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-books',
@@ -17,7 +17,7 @@ export class BooksComponent implements OnInit {
   public genres: IGenre[] = [];
   displayedColumns: string[] = ['IdBook', 'Title', 'Author', 'PublishedYear', 'IdGenre', 'Quantity'];
   dataSource: MatTableDataSource<IBook> = new MatTableDataSource();
-  constructor(private bookService: BookService, private dialog: MatDialog, private genreService: GenreService, private toastr: ToastrService) { }
+  constructor(private bookService: BookService, private dialog: MatDialog, private genreService: GenreService, /* private toastr: ToastrService*/) { }
 
   ngOnInit(): void {
     this.loadData();
@@ -36,7 +36,7 @@ export class BooksComponent implements OnInit {
         });
       },
       (error) => {
-        this.toastr.error('An error ocurred', 'Notification');
+        // this.toastr.error('An error ocurred', 'Notification');
       }
     );
   }
@@ -51,7 +51,7 @@ export class BooksComponent implements OnInit {
         });
       },
       (error) => {
-        this.toastr.error('An error ocurred', 'Notification');
+        // this.toastr.error('An error ocurred', 'Notification');
       }
     );
   }
@@ -78,14 +78,14 @@ export class BooksComponent implements OnInit {
     this.bookService.post(user).subscribe(
       (response) => {
         this.loadData();
-        this.toastr.success('Book saved!', 'Notification');
+        // this.toastr.success('Book saved!', 'Notification');
       },
       (error) => {
         if (error.errorCode) {
           if(error.errorCode == 409){
-            this.toastr.error('Book already exist', 'Notification');
+            // this.toastr.error('Book already exist', 'Notification');
           } else{
-            this.toastr.error('An error ocurred', 'Notification');
+            // this.toastr.error('An error ocurred', 'Notification');
           }          
         }
       }

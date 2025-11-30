@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
 import { IGenre } from 'src/app/interfaces/genre.interface';
 @Component({
@@ -8,9 +8,9 @@ import { IGenre } from 'src/app/interfaces/genre.interface';
   styleUrls: ['./book-dialog.component.scss']
 })
 export class BookDialogComponent implements OnInit {
-  public form!: FormGroup;
+  public form!: UntypedFormGroup;
   public genres: IGenre[] = [];
-  constructor(private fb: FormBuilder,
+  constructor(private fb: UntypedFormBuilder,
     private dialogRef: MatDialogRef<BookDialogComponent>,
     @Inject(MAT_DIALOG_DATA) data: any) {
       this.genres = data;

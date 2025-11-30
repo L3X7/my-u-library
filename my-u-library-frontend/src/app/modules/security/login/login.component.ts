@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { SecurityService } from 'src/app/services/security.service';
 import { Router } from '@angular/router';
-import { ToastrService } from 'ngx-toastr';
+// import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-login',
@@ -10,8 +10,8 @@ import { ToastrService } from 'ngx-toastr';
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit {
-  public form!: FormGroup;
-  constructor(private fb: FormBuilder, private securityService: SecurityService, private router: Router, private toastr: ToastrService) { }
+  public form!: UntypedFormGroup;
+  constructor(private fb: UntypedFormBuilder, private securityService: SecurityService, private router: Router,/* private toastr: ToastrService*/) { }
 
   ngOnInit(): void {
     this.form = this.fb.group({
@@ -28,16 +28,16 @@ export class LoginComponent implements OnInit {
         this.router.navigate(['/home']);
       },
       (error) => {
-        console.log(error);
-        if (error.errorCode) {
-          if (error.errorCode == 401) {
-            this.toastr.error('Authentication failed', 'Notification');
-          } else {
-            this.toastr.error('An error ocurred', 'Notification');
-          }
-        } else {
-          this.toastr.error('An error ocurred', 'Notification');
-        }
+        // console.log(error);
+        // if (error.errorCode) {
+        //   if (error.errorCode == 401) {
+        //     this.toastr.error('Authentication failed', 'Notification');
+        //   } else {
+        //     this.toastr.error('An error ocurred', 'Notification');
+        //   }
+        // } else {
+        //   this.toastr.error('An error ocurred', 'Notification');
+        // }
       }
     )
   }

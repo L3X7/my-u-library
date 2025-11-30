@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
 import { MapperHelper } from 'src/app/helpers/mapper.helper';
 import { MatDialog, MatDialogConfig } from "@angular/material/dialog";
@@ -8,7 +8,7 @@ import { IGenre } from 'src/app/interfaces/genre.interface';
 import { BookService } from 'src/app/services/book.service';
 import { GenreService } from 'src/app/services/genre.service';
 import { BookLogService } from 'src/app/services/book-log.service';
-import { ToastrService } from 'ngx-toastr';
+// import { ToastrService } from 'ngx-toastr';
 import { BookDetailDialogComponent } from 'src/app/shared/ui-components/book-detail-dialog/book-detail-dialog.component';
 import { CryptoService } from 'src/app/services/crypto.service';
 
@@ -23,18 +23,18 @@ export class SearchComponent implements OnInit {
 
   public displayedColumnsTemp: string[] = ['Title', 'options'];
   public dataSourceTemp: MatTableDataSource<IBook> = new MatTableDataSource();
-  public form!: FormGroup;
+  public form!: UntypedFormGroup;
   public genres: IGenre[] = [];
   public booksStoraged: IBook[] = [];
   public uI: any;
 
   constructor(private bookService: BookService,
     private dialog: MatDialog,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private genreService: GenreService,
     private mapperHelper: MapperHelper,
     private bookLogService: BookLogService,
-    private toastr: ToastrService,
+    // private toastr: ToastrService,
     private cryptoService: CryptoService) { }
 
   ngOnInit(): void {
@@ -92,7 +92,7 @@ export class SearchComponent implements OnInit {
         });
       },
       (error) => {
-        this.toastr.error('An error ocurred', 'Notification');
+        // this.toastr.error('An error ocurred', 'Notification');
       }
     );
   }
@@ -103,7 +103,7 @@ export class SearchComponent implements OnInit {
         this.dataSourceTemp.data = [...this.dataSourceTemp.data, book];
       },
       (error) => {
-        this.toastr.error('This book is not available for you', 'Notification');
+        // this.toastr.error('This book is not available for you', 'Notification');
       }
     )
   }
@@ -112,7 +112,7 @@ export class SearchComponent implements OnInit {
     if (this.dataSourceTemp.data.length > 0) {
       let bookRepetitive = this.dataSourceTemp.data.find(i => i.idBook == book.idBook);
       if (bookRepetitive) {
-        this.toastr.warning('This book already exists', 'Notification');
+        // this.toastr.warning('This book already exists', 'Notification');
         return;
       } else{
         this.validateBookReserved(book);
@@ -135,7 +135,7 @@ export class SearchComponent implements OnInit {
         this.dataSource.data = response.data;
       },
       (error) => {
-        this.toastr.error('An error ocurred', 'Notification');
+        // this.toastr.error('An error ocurred', 'Notification');
       }
     );
   }
@@ -154,10 +154,10 @@ export class SearchComponent implements OnInit {
       (response) => {
         this.dataSourceTemp.data = [];
         this.search();
-        this.toastr.success('Saved!', 'Notification');
+        // this.toastr.success('Saved!', 'Notification');
       },
       (error) => {
-        this.toastr.error('An error ocurred', 'Notification');
+        // this.toastr.error('An error ocurred', 'Notification');
       }
     );
   }

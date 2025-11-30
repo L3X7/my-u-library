@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
 import { IRole } from 'src/app/interfaces/role.interface';
 
@@ -9,10 +9,10 @@ import { IRole } from 'src/app/interfaces/role.interface';
   styleUrls: ['./user-dialog.component.scss']
 })
 export class UserDialogComponent implements OnInit {
-  public form!: FormGroup;
+  public form!: UntypedFormGroup;
   public roles: IRole[] = [];
 
-  constructor(private fb: FormBuilder,
+  constructor(private fb: UntypedFormBuilder,
     private dialogRef: MatDialogRef<UserDialogComponent>,
     @Inject(MAT_DIALOG_DATA) data: any) {
       this.roles = data;

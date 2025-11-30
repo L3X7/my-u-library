@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
 import { IBookLog } from 'src/app/interfaces/book-log.interface';
 import { BookLogService } from 'src/app/services/book-log.service';
-import { ToastrService } from 'ngx-toastr';
+// import { ToastrService } from 'ngx-toastr';
 import { DateHelper } from 'src/app/helpers/date.helper';
 
 @Component({
@@ -14,8 +14,8 @@ import { DateHelper } from 'src/app/helpers/date.helper';
 export class BookReturnComponent implements OnInit {
   public displayedColumns: string[] = ['Title', 'User', 'Email', 'LoanedDate', 'options'];
   public dataSource: MatTableDataSource<IBookLog> = new MatTableDataSource();
-  public form!: FormGroup;
-  constructor(private bookLogService: BookLogService, private fb: FormBuilder, private toastr: ToastrService, private dateHelper: DateHelper) { }
+  public form!: UntypedFormGroup;
+  constructor(private bookLogService: BookLogService, private fb: UntypedFormBuilder, /*private toastr: ToastrService,*/ private dateHelper: DateHelper) { }
 
   ngOnInit(): void {
     this.form = this.fb.group({
@@ -32,11 +32,11 @@ export class BookReturnComponent implements OnInit {
       (response) => {
         this.dataSource.data = [];
         this.search();
-        this.toastr.success('Book returned!', 'Notification');
+        // this.toastr.success('Book returned!', 'Notification');
 
       },
       (error) => {
-        this.toastr.error('An error ocurred', 'Notification');
+        // this.toastr.error('An error ocurred', 'Notification');
       }
     );
   }
